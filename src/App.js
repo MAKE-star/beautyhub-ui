@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 /* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
 const T = {
@@ -93,8 +93,6 @@ const ALL_USERS = [
 ];
 
 /* ─── PRIMITIVES ─────────────────────────────────────────────────────────── */
-const css = (obj) => Object.entries(obj).map(([k, v]) => `${k.replace(/([A-Z])/g, '-$1').toLowerCase()}:${v}`).join(';');
-
 const Chip = ({ label, color }) => (
   <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6, background: color + "22", color: color, fontFamily: "system-ui", fontWeight: 600, letterSpacing: 0.2 }}>{label}</span>
 );
@@ -216,7 +214,7 @@ const Ico = ({ name, size = 18, color = T.text0, weight = "1.8" }) => (
    SPLASH
 ══════════════════════════════════════════════════════════════════════════════*/
 const SplashScreen = ({ onDone }) => {
-  useEffect(() => { const t = setTimeout(onDone, 2400); return () => clearTimeout(t); }, []);
+  useEffect(() => { const t = setTimeout(onDone, 2400); return () => clearTimeout(t); }, [onDone]);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: T.bg0, minHeight: "100vh", gap: 20 }}>
       <div style={{ position: "relative" }}>
@@ -1271,9 +1269,9 @@ export default function App() {
         />
       )}
 
-      {screen === "hirer" && <HirerApp />}
-      {screen === "provider" && <ProviderApp />}
-      {screen === "admin" && <AdminApp />}
+      {screen === "hirer" && role === "hirer"&& <HirerApp />}
+      {screen === "provider" && role === "provider" && <ProviderApp />}
+      {screen === "admin" && role === "admin" && <AdminApp />}
 
       {/* Role switcher */}
       {screen !== "splash" && screen !== "role" && (
