@@ -185,7 +185,7 @@ const Section = ({ title, children, right }) => (
 );
 
 const Toast = ({ msg, onDone }) => {
-  useEffect(() => { const t = setTimeout(onDone, 2500); return () => clearTimeout(t); }, []);
+  useEffect(() => { const t = setTimeout(onDone, 2500); return () => clearTimeout(t); }, [onDone]);
   return (
     <div style={{ position: "fixed", bottom: 100, left: "50%", transform: "translateX(-50%)", background: T.bg3, border: `1px solid ${T.borderHi}`, borderRadius: 12, padding: "12px 20px", zIndex: 9999, fontSize: 13, color: T.text0, fontFamily: "system-ui", fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>{msg}</div>
   );
@@ -259,7 +259,7 @@ const Ico = ({ name, size = 18, color = T.text0, weight = "1.8" }) => (
    SPLASH
 ══════════════════════════════════════════════════════════════════════════════*/
 const SplashScreen = ({ onDone }) => {
-  useEffect(() => { const t = setTimeout(onDone, 2400); return () => clearTimeout(t); }, []);
+  useEffect(() => { const t = setTimeout(onDone, 2400); return () => clearTimeout(t); }, [onDone]);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: T.bg0, minHeight: "100vh", gap: 20 }}>
       <div style={{ width: 80, height: 80, borderRadius: 24, background: `linear-gradient(135deg, ${T.accent}, #A78BFA)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1313,7 +1313,6 @@ const ProviderOnboarding = ({ onDone }) => {
   const [form, setForm] = useState({ name:"", type:"salon", cac:"", whatsapp:"", cats:[], serviceMode:[], baseFee:"", location:"" });
   // Track uploaded photos per category: { catId: [file1, file2, ...] }
   const [portfolioPhotos, setPortfolioPhotos] = useState({});
-  const fileInputRefs = useRef({});
 
   const next = () => step < 4 ? setStep(s => s+1) : onDone();
   const toggleCat = (id) => setForm(f => ({ ...f, cats: f.cats.includes(id) ? f.cats.filter(c => c !== id) : [...f.cats, id] }));
