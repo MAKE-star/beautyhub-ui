@@ -266,7 +266,7 @@ const SplashScreen = ({ onDone }) => {
         <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
       </div>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 34, fontWeight: 800, color: T.text0, letterSpacing: -0.5, fontFamily: "system-ui" }}>BeautyHub</div>
+        <div style={{ fontSize: 34, fontWeight: 800, color: T.text0, letterSpacing: -0.5, fontFamily: "system-ui" }}>Staxz</div>
         <div style={{ fontSize: 14, color: T.text1, fontFamily: "system-ui", marginTop: 6, letterSpacing: 0.3 }}>Lagos's Beauty & Grooming Marketplace</div>
       </div>
     </div>
@@ -280,7 +280,7 @@ const RoleScreen = ({ onSelect }) => (
   <div style={{ flex: 1, display: "flex", flexDirection: "column", background: T.bg0, padding: "0 16px 40px", minHeight: "100vh" }}>
     <div style={{ paddingTop: 80, marginBottom: 36 }}>
       <div style={{ fontSize: 28, fontWeight: 800, color: T.text0, fontFamily: "system-ui", lineHeight: 1.2, marginBottom: 8 }}>Welcome back.</div>
-      <div style={{ fontSize: 15, color: T.text1, fontFamily: "system-ui" }}>Choose how you're using BeautyHub today.</div>
+      <div style={{ fontSize: 15, color: T.text1, fontFamily: "system-ui" }}>Choose how you're using Staxz today.</div>
     </div>
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       {[
@@ -442,7 +442,6 @@ const ProviderProfile = ({ provider: p, onClose, onEnquire, isFaved, onToggleFav
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                     {items.map((item, idx) => (
                       <div key={idx} style={{ borderRadius: 14, background: `linear-gradient(135deg, ${item.color}28, ${item.color}10)`, border: `1px solid ${item.color}33`, overflow: "hidden" }}>
-                        {/* Photo grid (simulated) */}
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2, padding: 8 }}>
                           {(item.photos || []).slice(0, 3).map((_, pi) => (
                             <div key={pi} style={{ aspectRatio: "1", borderRadius: 6, background: item.color + "30", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -492,7 +491,6 @@ const ProviderProfile = ({ provider: p, onClose, onEnquire, isFaved, onToggleFav
 
       <div style={{ padding: "12px 16px 32px", background: T.bg1, borderTop: `1px solid ${T.border}`, flexShrink: 0 }}>
         <div style={{ display: "flex", gap: 10 }}>
-          {/* Save / favourite button */}
           <div onClick={onToggleFave} style={{ flexShrink: 0, background: isFaved ? T.amberLo : T.bg3, border: `1px solid ${isFaved ? T.amber + "66" : T.border}`, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", padding: "12px 14px", cursor: "pointer", transition: "all .2s" }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill={isFaved ? T.amber : "none"} stroke={isFaved ? T.amber : T.text1} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -571,7 +569,6 @@ const BookingDetailModal = ({ booking: b, onClose, onConfirmComplete, onRaiseDis
               <span style={{ fontSize: 13, fontWeight: 600, color: T.text0, fontFamily: "system-ui", textAlign: "right", maxWidth: "55%" }}>{v}</span>
             </div>
           ))}
-          {/* Only show address for home service upcoming */}
           {b.status === "upcoming" && b.type === "Home Service" && (
             <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
               <span style={{ fontSize: 13, color: T.text1, fontFamily: "system-ui" }}>Address</span>
@@ -705,14 +702,14 @@ const AllProvidersScreen = ({ onProfile, onEnquire, onClose }) => {
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px 0", color: T.text2, fontFamily: "system-ui" }}>No providers match your filters.</div>
         ) : filtered.map(p => (
-          <ProviderCard key={p.id} p={p} onProfile={onProfile} onEnquire={onEnquire} showMode={false} />
+          <ProviderCard key={p.id} p={p} onProfile={onProfile} onEnquire={onEnquire} />
         ))}
       </Screen>
     </div>
   );
 };
 
-const ProviderCard = ({ p, onProfile, onEnquire, showMode = false }) => (
+const ProviderCard = ({ p, onProfile, onEnquire }) => (
   <Card style={{ marginBottom: 12 }}>
     <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
       <Avatar initials={p.initials} color={p.color} size={46} />
@@ -771,7 +768,7 @@ const HirerApp = () => {
     setViewBooking(null);
   };
 
-  const handleRaiseDispute = (id, reason) => {
+  const handleRaiseDispute = (id) => {
     setBookings(bs => bs.map(b => b.id === id ? { ...b, status: "disputed" } : b));
     showToast("⚠️ Dispute raised. Funds frozen pending review.");
     setViewBooking(null);
@@ -1173,7 +1170,6 @@ const ProviderBookings = () => {
         <StatusDot status={selected.status} />
         <Divider />
         {[["Booking ID", selected.id], ["Client", selected.client], ["Date", selected.date], ["Type", selected.type], ["Amount", selected.amount],
-          // Only show address for home service (and only if address exists)
           ...(selected.type === "Home Service" && selected.address ? [["Address", selected.address]] : [])
         ].map(([k,v]) => (
           <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
@@ -1311,14 +1307,12 @@ const LocationAutocomplete = ({ value, onChange }) => {
 const ProviderOnboarding = ({ onDone }) => {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ name:"", type:"salon", cac:"", whatsapp:"", cats:[], serviceMode:[], baseFee:"", location:"" });
-  // Track uploaded photos per category: { catId: [file1, file2, ...] }
   const [portfolioPhotos, setPortfolioPhotos] = useState({});
 
   const next = () => step < 4 ? setStep(s => s+1) : onDone();
   const toggleCat = (id) => setForm(f => ({ ...f, cats: f.cats.includes(id) ? f.cats.filter(c => c !== id) : [...f.cats, id] }));
 
   const handlePhotoAdd = (catId) => {
-    // Simulate adding a photo
     setPortfolioPhotos(prev => ({
       ...prev,
       [catId]: [...(prev[catId] || []), { id: Date.now(), emoji: ALL_CATEGORIES.find(c=>c.id===catId)?.icon || "📷" }]
@@ -1473,7 +1467,7 @@ const ProviderOnboarding = ({ onDone }) => {
               <Ico name="check" size={36} color={T.white} weight="2.5" />
             </div>
             <div style={{ fontSize:26, fontWeight:800, color:T.text0, fontFamily:"system-ui", marginBottom:8 }}>You're Live!</div>
-            <div style={{ fontSize:14, color:T.text1, fontFamily:"system-ui", lineHeight:1.7, marginBottom:24 }}><strong style={{ color:T.text0 }}>{form.name||"Your business"}</strong> is now visible to clients on BeautyHub.</div>
+            <div style={{ fontSize:14, color:T.text1, fontFamily:"system-ui", lineHeight:1.7, marginBottom:24 }}><strong style={{ color:T.text0 }}>{form.name||"Your business"}</strong> is now visible to clients on Staxz.</div>
             <Card style={{ textAlign:"left", marginBottom:24 }}>
               {[["Business",form.name||"—"],["Type",form.type==="salon"?"Salon":"Independent"],["CAC",form.cac||"—"],["Location",form.location||"—"],
                 ["Service Mode",(form.serviceMode||[]).map(m=>m==="home"?"Home Service":"Walk-In").join(" + ")||"—"],
@@ -1547,7 +1541,7 @@ const AdminApp = () => {
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div>
             <div style={{ fontSize:12, color:T.amber, fontFamily:"system-ui", fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", marginBottom:4 }}>Admin Portal</div>
-            <div style={{ fontSize:22, fontWeight:800, color:T.text0, fontFamily:"system-ui" }}>BeautyHub Control</div>
+            <div style={{ fontSize:22, fontWeight:800, color:T.text0, fontFamily:"system-ui" }}>Staxz Control</div>
           </div>
           <div style={{ background:T.amberLo, border:`1px solid ${T.amber}33`, borderRadius:10, padding:"6px 12px" }}>
             <span style={{ fontSize:13, color:T.amber, fontFamily:"system-ui", fontWeight:700 }}>+23% MoM</span>
@@ -1619,8 +1613,6 @@ const AdminOverview = ({ conversations, onRefund, onRelease }) => {
 
 const AdminChats = ({ conversations, onRefund, onRelease, showToast }) => {
   const [selected, setSelected] = useState(null);
-
-  // Keep selected in sync with conversations state
   const selectedConv = selected ? conversations.find(c => c.id === selected.id) : null;
 
   if (selectedConv) return (
@@ -1654,7 +1646,7 @@ const AdminChats = ({ conversations, onRefund, onRelease, showToast }) => {
             <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:isBot?"center":isHirer?"flex-start":"flex-end" }}>
               {isBot ? (
                 <div style={{ background:T.accentLo, border:`1px solid ${T.accentMid}`, borderRadius:10, padding:"8px 12px", maxWidth:"90%", textAlign:"center" }}>
-                  <div style={{ fontSize:10, color:T.accent, fontFamily:"system-ui", fontWeight:700, marginBottom:3 }}>BEAUTYHUB BOT</div>
+                  <div style={{ fontSize:10, color:T.accent, fontFamily:"system-ui", fontWeight:700, marginBottom:3 }}>STAXZ BOT</div>
                   <div style={{ fontSize:12, color:T.text0, fontFamily:"system-ui", lineHeight:1.5 }}>{m.text}</div>
                   <div style={{ fontSize:10, color:T.text2, fontFamily:"system-ui", marginTop:3 }}>{m.time}</div>
                 </div>
