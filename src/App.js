@@ -2,17 +2,17 @@ import { useState, useEffect, useRef } from "react";
 
 /* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
 const T = {
-  bg0: "#0A0A0B", bg1: "#111113", bg2: "#18181C", bg3: "#222228", bg4: "#2C2C34",
-  border: "#2E2E38", borderHi: "#3E3E4A",
-  accent: "#7C6FFF", accentLo: "#7C6FFF22", accentMid: "#7C6FFF44",
-  green: "#22C55E", greenLo: "#22C55E18",
-  amber: "#F59E0B", amberLo: "#F59E0B18",
-  red: "#EF4444", redLo: "#EF444418",
-  text0: "#F4F4F6", text1: "#A0A0B0", text2: "#606070", white: "#FFFFFF",
+  bg0: "#FAF8F5", bg1: "#FFFFFF", bg2: "#F3EFF9", bg3: "#EDE8F7", bg4: "#E4DCF5",
+  border: "#E8E2F0", borderHi: "#D4C9E8",
+  accent: "#7B4FA6", accentLo: "#7B4FA614", accentMid: "#7B4FA638",
+  green: "#4CAF82", greenLo: "#4CAF8214",
+  amber: "#D4974A", amberLo: "#D4974A18",
+  red: "#D94F4F", redLo: "#D94F4F18",
+  text0: "#1A1025", text1: "#4A3D5C", text2: "#9080A8", white: "#FFFFFF",
 };
 
 const ALL_CATEGORIES = [
-  { id: "haircut", label: "Haircut & Styling", icon: "✂", color: "#7C6FFF" },
+  { id: "haircut", label: "Haircut & Styling", icon: "✂", color: "#7B4FA6" },
   { id: "barbing", label: "Barbing", icon: "🪒", color: "#06B6D4" },
   { id: "braids", label: "Braids & Locs", icon: "🪢", color: "#EC4899" },
   { id: "makeup", label: "Makeup", icon: "💄", color: "#F43F5E" },
@@ -33,8 +33,8 @@ const PROVIDERS = [
       { cat: "barbing", label: "Skin Fade", color: "#06B6D4", emoji: "💈", photos: ["p1","p2","p3"] },
       { cat: "barbing", label: "Low Fade + Line Up", color: "#06B6D4", emoji: "✂️", photos: ["p1","p2","p3"] },
       { cat: "barbing", label: "Beard Sculpt", color: "#06B6D4", emoji: "🪒", photos: ["p1","p2","p3"] },
-      { cat: "haircut", label: "Full Cut & Style", color: "#7C6FFF", emoji: "💇", photos: ["p1","p2","p3"] },
-      { cat: "haircut", label: "Kids Haircut", color: "#7C6FFF", emoji: "👦", photos: ["p1","p2","p3"] },
+      { cat: "haircut", label: "Full Cut & Style", color: "#7B4FA6", emoji: "💇", photos: ["p1","p2","p3"] },
+      { cat: "haircut", label: "Kids Haircut", color: "#7B4FA6", emoji: "👦", photos: ["p1","p2","p3"] },
       { cat: "coloring", label: "Full Colour", color: "#22C55E", emoji: "🎨", photos: ["p1","p2","p3"] },
     ]
   },
@@ -187,7 +187,7 @@ const Section = ({ title, children, right }) => (
 const Toast = ({ msg, onDone }) => {
   useEffect(() => { const t = setTimeout(onDone, 2500); return () => clearTimeout(t); }, [onDone]);
   return (
-    <div style={{ position: "fixed", bottom: 100, left: "50%", transform: "translateX(-50%)", background: T.bg3, border: `1px solid ${T.borderHi}`, borderRadius: 12, padding: "12px 20px", zIndex: 9999, fontSize: 13, color: T.text0, fontFamily: "system-ui", fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>{msg}</div>
+    <div style={{ position: "fixed", bottom: 100, left: "50%", transform: "translateX(-50%)", background: T.bg3, border: `1px solid ${T.borderHi}`, borderRadius: 12, padding: "12px 20px", zIndex: 9999, fontSize: 13, color: T.text0, fontFamily: "system-ui", fontWeight: 600, whiteSpace: "nowrap", boxShadow: "0 8px 32px rgba(123,79,166,0.15)" }}>{msg}</div>
   );
 };
 
@@ -259,16 +259,102 @@ const Ico = ({ name, size = 18, color = T.text0, weight = "1.8" }) => (
    SPLASH
 ══════════════════════════════════════════════════════════════════════════════*/
 const SplashScreen = ({ onDone }) => {
-  useEffect(() => { const t = setTimeout(onDone, 2400); return () => clearTimeout(t); }, [onDone]);
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState(0); // 0=logo in, 1=text in, 2=loading, 3=done
+
+  useEffect(() => {
+    // Logo pops in at 0ms
+    const t1 = setTimeout(() => setPhase(1), 300);   // text fades in
+    const t2 = setTimeout(() => setPhase(2), 700);   // loading bar starts
+
+    // Progress bar fills over ~1400ms
+    let prog = 0;
+    const interval = setInterval(() => {
+      prog += Math.random() * 18 + 6;
+      if (prog >= 100) { prog = 100; clearInterval(interval); }
+      setProgress(Math.min(prog, 100));
+    }, 120);
+
+    const t3 = setTimeout(() => { setPhase(3); }, 2200);
+    const t4 = setTimeout(onDone, 2600);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearInterval(interval); };
+  }, [onDone]);
+
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: T.bg0, minHeight: "100vh", gap: 20 }}>
-      <div style={{ width: 80, height: 80, borderRadius: 24, background: `linear-gradient(135deg, ${T.accent}, #A78BFA)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: T.bg0, minHeight: "100vh", gap: 0, position: "relative", overflow: "hidden" }}>
+
+      {/* ambient glow */}
+      <div style={{ position: "absolute", width: 320, height: 320, borderRadius: "50%", background: `radial-gradient(circle, ${T.accent}18 0%, transparent 70%)`, top: "50%", left: "50%", transform: "translate(-50%, -60%)", pointerEvents: "none" }} />
+
+      {/* Logo */}
+      <div style={{
+        width: 100, height: 100, borderRadius: 28,
+        background: `linear-gradient(145deg, ${T.accent}, #C084E8)`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: `0 20px 60px ${T.accent}44, 0 0 0 1px ${T.accent}22`,
+        transform: phase >= 0 ? "scale(1) translateY(0)" : "scale(0.5) translateY(30px)",
+        opacity: phase >= 0 ? 1 : 0,
+        transition: "transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease",
+        marginBottom: 24,
+      }}>
+        <img src="/starkel-logo.png" alt="Staxz"
+          style={{ width: 64, height: 64, objectFit: "contain", filter: "brightness(10)" }}
+          onError={e => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+        />
+        {/* fallback if logo missing */}
+        <div style={{ display: "none", alignItems: "center", justifyContent: "center", width: 64, height: 64 }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+        </div>
       </div>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 34, fontWeight: 800, color: T.text0, letterSpacing: -0.5, fontFamily: "system-ui" }}>Staxz</div>
-        <div style={{ fontSize: 14, color: T.text1, fontFamily: "system-ui", marginTop: 6, letterSpacing: 0.3 }}>Lagos's Beauty & Grooming Marketplace</div>
+
+      {/* Brand name + tagline */}
+      <div style={{
+        textAlign: "center", marginBottom: 48,
+        opacity: phase >= 1 ? 1 : 0,
+        transform: phase >= 1 ? "translateY(0)" : "translateY(14px)",
+        transition: "opacity 0.5s ease, transform 0.5s ease",
+      }}>
+        <div style={{ fontSize: 36, fontWeight: 800, color: T.text0, letterSpacing: -0.5, fontFamily: "system-ui" }}>Staxz</div>
+        <div style={{ fontSize: 13, color: T.text1, fontFamily: "system-ui", marginTop: 6, letterSpacing: 0.5 }}>Lagos's Beauty & Grooming Marketplace</div>
       </div>
+
+      {/* Loading bar */}
+      <div style={{
+        width: 180,
+        opacity: phase >= 2 ? 1 : 0,
+        transform: phase >= 2 ? "translateY(0)" : "translateY(10px)",
+        transition: "opacity 0.4s ease, transform 0.4s ease",
+      }}>
+        {/* track */}
+        <div style={{ height: 3, background: T.border, borderRadius: 99, overflow: "hidden" }}>
+          <div style={{
+            height: "100%", borderRadius: 99,
+            background: `linear-gradient(90deg, ${T.accent}, #C084E8)`,
+            width: `${progress}%`,
+            transition: "width 0.12s ease-out",
+            boxShadow: `0 0 8px ${T.accent}88`,
+          }} />
+        </div>
+        {/* loading dots */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 14 }}>
+          {[0,1,2].map(i => (
+            <div key={i} style={{
+              width: 5, height: 5, borderRadius: "50%",
+              background: T.accent,
+              opacity: phase >= 2 ? 0.9 : 0,
+              animation: phase >= 2 ? `splashDot 1.2s ${i * 0.2}s ease-in-out infinite` : "none",
+            }} />
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes splashDot {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+          40% { transform: scale(1.2); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };
@@ -1288,7 +1374,7 @@ const LocationAutocomplete = ({ value, onChange }) => {
         </div>
       </div>
       {open && suggestions.length > 0 && (
-        <div style={{ position:"absolute", top:"calc(100% + 6px)", left:0, right:0, zIndex:200, background:T.bg2, border:`1px solid ${T.borderHi}`, borderRadius:12, overflow:"hidden", boxShadow:"0 8px 32px rgba(0,0,0,0.6)" }}>
+        <div style={{ position:"absolute", top:"calc(100% + 6px)", left:0, right:0, zIndex:200, background:T.bg2, border:`1px solid ${T.borderHi}`, borderRadius:12, overflow:"hidden", boxShadow:"0 8px 32px rgba(123,79,166,0.15)" }}>
           {suggestions.map((loc, i) => (
             <div key={loc} onMouseDown={() => handleSelect(loc)}
               style={{ padding:"11px 14px", cursor:"pointer", display:"flex", alignItems:"center", gap:10, borderBottom: i<suggestions.length-1?`1px solid ${T.border}`:"none" }}
@@ -1853,8 +1939,8 @@ export default function App() {
   const [screen, setScreen] = useState("splash");
 
   return (
-    <div style={{ fontFamily:"system-ui, -apple-system, sans-serif", background:T.bg0, minHeight:"100vh", display:"flex", flexDirection:"column", maxWidth:430, margin:"0 auto", position:"relative", overflow:"hidden", boxShadow:"0 0 80px rgba(0,0,0,0.8)" }}>
-      <style>{`* { box-sizing: border-box; margin: 0; padding: 0; } ::-webkit-scrollbar { display: none; } body { background: #000; } input,textarea { color-scheme: dark; } button:active { opacity: 0.75; }`}</style>
+    <div style={{ fontFamily:"system-ui, -apple-system, sans-serif", background:T.bg0, minHeight:"100vh", display:"flex", flexDirection:"column", maxWidth:430, margin:"0 auto", position:"relative", overflow:"hidden", boxShadow:"0 0 60px rgba(123,79,166,0.12)" }}>
+      <style>{`* { box-sizing: border-box; margin: 0; padding: 0; } ::-webkit-scrollbar { display: none; } body { background: #FAF8F5; } input,textarea { color-scheme: light; } button:active { opacity: 0.75; }`}</style>
 
       {screen === "splash" && <SplashScreen onDone={() => setScreen("role")} />}
       {screen === "role" && <RoleScreen onSelect={r => setScreen(r)} />}
